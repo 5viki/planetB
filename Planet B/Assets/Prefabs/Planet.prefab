@@ -70,6 +70,7 @@ MonoBehaviour:
   gravityScale: 0.5
   gravitationalField: {fileID: 0}
   surfaceCollider: {fileID: 0}
+  nearbyBodies: []
 --- !u!58 &5672787775118509179
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -141,7 +142,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 5
+  m_Radius: 17.47
 --- !u!50 &1986014831200976057
 Rigidbody2D:
   serializedVersion: 5
