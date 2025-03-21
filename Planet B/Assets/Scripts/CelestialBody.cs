@@ -1,6 +1,5 @@
 
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -15,7 +14,7 @@ public class CelestialBody : MonoBehaviour, IPointerDownHandler
     [SerializeField] List<CelestialBody> nearbyBodies;
     bool givenInitialVelocity = false;
     CelestialBody slingBody;
-    float slingFactor;
+    float slingAttractionFactor;
     bool planetClicked;
     void Start()
     {
@@ -24,6 +23,7 @@ public class CelestialBody : MonoBehaviour, IPointerDownHandler
         myColliders = GetComponents<CircleCollider2D>();
         myRigidBody = GetComponent<Rigidbody2D>();
         mass = myRigidBody.mass;
+        
         foreach (CircleCollider2D collider in myColliders)
         {
             if(collider.isTrigger)
@@ -60,27 +60,29 @@ public class CelestialBody : MonoBehaviour, IPointerDownHandler
 
     void FixedUpdate()
     {
+        myRigidBody.mass = mass;
+        if (slingBody != null && GetComponent<PlayerPlanet>() != null) //Increase attraction
+        {
+            float distance = Vector2.Distance(slingBody.transform.position, transform.position);
+            Vector2 direction = (slingBody.transform.position - transform.position).normalized;
+            Vector2 forceVector = gravityScale*direction*slingBody.mass / (distance*distance);
+            //gravitationalField.radius = slingAttractionFactor * gravitationalField.radius;
+            //myRigidBody.AddForce(slingAttractionFactor*forceVector, ForceMode2D.Force);
+            myRigidBody.AddForce(slingAttractionFactor* distance * direction, ForceMode2D.Force);
+            //gravitationalField.radius = gravitationalField.radius / slingAttractionFactor;
+        }
         if (nearbyBodies != null)
         {
             if (!givenInitialVelocity)
             {
                 InitialVelocity();
             }
-            
             foreach (CelestialBody body in nearbyBodies)
             {
                 float distance = Vector2.Distance(body.transform.position, transform.position);
                 Vector2 direction = (body.transform.position - transform.position).normalized;
-                if (slingBody != null && body == slingBody) //Increase attraction
-                {
-                    gravitationalField.radius = slingFactor * gravitationalField.radius;
-                    myRigidBody.AddForce(slingFactor*gravityScale*direction*mass*body.mass / (distance*distance), ForceMode2D.Force);
-                    gravitationalField.radius = gravitationalField.radius / slingFactor;
-                }
-                else
-                {
-                    myRigidBody.AddForce(gravityScale*direction*mass*body.mass / (distance*distance), ForceMode2D.Force);
-                }
+                Vector2 forceVector = gravityScale*direction*body.mass / (distance*distance);
+                myRigidBody.AddForce(forceVector, ForceMode2D.Force);
             }
         }
     }
@@ -91,7 +93,7 @@ public class CelestialBody : MonoBehaviour, IPointerDownHandler
             float distance = Vector2.Distance(transform.position, body.transform.position);
             Vector2 direction = (body.transform.position - transform.position).normalized;
             Vector2 perpendicularDirection = new Vector2(-direction.y , direction.x);
-            float initialSpeed = Mathf.Sqrt(gravityScale * body.mass / distance);
+            float initialSpeed = Mathf.Sqrt(gravityScale * body.mass / (distance*mass));
 
             myRigidBody.linearVelocity += perpendicularDirection * initialSpeed; 
             givenInitialVelocity = true;
@@ -104,7 +106,6 @@ public class CelestialBody : MonoBehaviour, IPointerDownHandler
         {
             PlayerPlanet playerPlanet = FindFirstObjectByType<PlayerPlanet>();
             if (playerPlanet.gameObject == this.gameObject){return;}
-            Debug.DrawLine(transform.position, playerPlanet.transform.position, Color.white, 3);
             playerPlanet.SlingAround(this);
             planetClicked = true;
             return;
@@ -122,7 +123,7 @@ public class CelestialBody : MonoBehaviour, IPointerDownHandler
     public void SetSling(CelestialBody planet, float addedGravity)
     {
         slingBody = planet;
-        slingFactor = addedGravity;
+        slingAttractionFactor = addedGravity;
 
     }
 }

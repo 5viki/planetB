@@ -11,12 +11,13 @@ GameObject:
   - component: {fileID: 7590263483381469557}
   - component: {fileID: 5246711555090864624}
   - component: {fileID: 8594847877067827649}
+  - component: {fileID: 7756618756343649120}
   - component: {fileID: 5672787775118509179}
   - component: {fileID: 4632906283891848152}
   - component: {fileID: 1986014831200976057}
   m_Layer: 0
   m_Name: Planet
-  m_TagString: Untagged
+  m_TagString: Stickable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -71,6 +72,20 @@ MonoBehaviour:
   gravitationalField: {fileID: 0}
   surfaceCollider: {fileID: 0}
   nearbyBodies: []
+--- !u!114 &7756618756343649120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424314646859479230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034363e92942f944eaccde214afb16c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxMassDifference: 5
+  attachedPlanets: []
 --- !u!58 &5672787775118509179
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -142,7 +157,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 17.47
+  m_Radius: 10.3
 --- !u!50 &1986014831200976057
 Rigidbody2D:
   serializedVersion: 5
